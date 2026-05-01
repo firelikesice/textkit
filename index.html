@@ -1,0 +1,584 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>textkit · 텍스트 유틸</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+/* ── reset ── */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; height: 100%; }
+
+/* ── tokens ── */
+:root {
+  --bg:        #EEEEEC;
+  --bg-soft:   #E5E5E3;
+  --bg-card:   #F8F8F6;
+  --ink:       #3A3C3E;
+  --ink-soft:  #73767A;
+  --ink-mute:  #A8ABAE;
+  --line:      #D8D9D6;
+  --line-soft: #E2E3E0;
+  --accent:    #62737C;
+  --accent-soft:#DCE0E2;
+  --indicator: #3A3C3E;
+  --ind-ink:   #F8F8F6;
+  --ok:        #6E9A85;
+  --bad:       #A87878;
+}
+
+body {
+  font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont,
+               'Apple SD Gothic Neo', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  background: var(--bg);
+  color: var(--ink);
+}
+
+/* ── root ── */
+.util-root {
+  min-height: 100vh;
+  background: var(--bg);
+  background-image:
+    radial-gradient(900px 500px at 80% -10%, rgba(255,255,255,.5), transparent 60%),
+    radial-gradient(800px 400px at -10% 110%, rgba(190,195,200,.18), transparent 60%);
+}
+
+.wrap {
+  max-width: 620px;
+  margin: 0 auto;
+  padding: 48px 24px 80px;
+}
+
+@media (min-width: 780px) {
+  .wrap {
+    max-width: 1080px;
+    padding: 56px 48px 80px;
+  }
+}
+
+/* ── brand ── */
+.brand {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+  gap: 16px;
+}
+.brand-mark {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.mark-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+  box-shadow: 0 0 0 4px var(--accent-soft);
+}
+.brand-text { display: flex; flex-direction: column; gap: 2px; }
+.brand-name {
+  font-family: 'Geist Mono', ui-monospace, monospace;
+  font-size: 18px; font-weight: 500;
+  letter-spacing: -0.01em; line-height: 1;
+  color: var(--ink);
+}
+.brand-sub {
+  font-size: 12px; color: var(--ink-mute);
+  letter-spacing: -0.005em; line-height: 1.2;
+}
+
+/* ── toggle ── */
+.toggle-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 32px;
+}
+.toggle {
+  position: relative;
+  display: inline-flex;
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 5px;
+  gap: 4px;
+}
+.indicator {
+  position: absolute;
+  top: 5px; bottom: 5px;
+  border-radius: 999px;
+  background: var(--indicator);
+  box-shadow: 0 2px 8px rgba(50,55,60,.12);
+  z-index: 0;
+  transition: transform .35s cubic-bezier(.6,.05,.2,1), width .35s cubic-bezier(.6,.05,.2,1);
+  pointer-events: none;
+}
+.toggle button {
+  appearance: none; border: 0;
+  background: transparent;
+  padding: 11px 24px;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 14px; font-weight: 500;
+  cursor: pointer;
+  transition: color .25s ease;
+  position: relative; z-index: 1;
+  min-width: 120px;
+  letter-spacing: -0.005em;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+.toggle button.active { color: var(--ind-ink); }
+.toggle button .glyph {
+  font-family: 'Geist Mono', monospace;
+  margin-right: 7px;
+  opacity: .9;
+}
+
+/* ── cards ── */
+.cards { display: flex; flex-direction: column; gap: 16px; }
+
+@media (min-width: 780px) {
+  .cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    align-items: stretch;
+  }
+}
+
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 780px) {
+  .card { padding: 24px; }
+}
+
+/* card header */
+.card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
+  min-height: 28px;
+}
+.card-label {
+  font-family: 'Geist Mono', monospace;
+  font-size: 11px; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--ink-mute);
+  padding-top: 8px; white-space: nowrap;
+}
+.card-actions { display: flex; gap: 8px; }
+
+/* buttons */
+.icon-btn, .copy-btn {
+  appearance: none;
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: inherit; font-size: 12px; font-weight: 500;
+  letter-spacing: -0.005em; cursor: pointer;
+  transition: all .18s ease; flex-shrink: 0;
+}
+.icon-btn {
+  border: 1px solid var(--line);
+  background: var(--bg-card);
+  color: var(--ink-soft);
+  padding: 7px 12px; border-radius: 999px;
+}
+.icon-btn svg { opacity: .8; }
+.icon-btn:hover {
+  background: var(--bg-soft); color: var(--ink);
+  border-color: color-mix(in oklab, var(--ink) 22%, var(--line));
+}
+.icon-btn:hover svg { opacity: 1; }
+.icon-btn:active { transform: translateY(1px); }
+
+.copy-btn {
+  border: 1px solid var(--ink);
+  background: var(--ink); color: #fff;
+  padding: 7px 14px; border-radius: 999px; font-weight: 600;
+}
+.copy-btn svg { opacity: .9; }
+.copy-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px -4px color-mix(in oklab, var(--ink) 40%, transparent);
+}
+.copy-btn:active:not(:disabled) { transform: translateY(0); }
+.copy-btn:disabled {
+  opacity: .35; cursor: not-allowed;
+  background: var(--bg-soft); color: var(--ink-mute);
+  border-color: var(--line);
+}
+
+/* textarea / output */
+textarea, .output {
+  width: 100%;
+  min-height: 130px;
+  flex: 1 1 auto;
+  border: 0; background: transparent; color: var(--ink);
+  font-family: 'Geist Mono', ui-monospace, monospace;
+  font-size: 14px; line-height: 1.65;
+  resize: none; outline: none; padding: 0;
+  display: block;
+}
+textarea::placeholder {
+  color: var(--ink-mute); font-size: 14px;
+  font-weight: 400; white-space: pre-line; line-height: 1.6;
+}
+@media (min-width: 780px) {
+  textarea, .output { min-height: 320px; }
+}
+.output {
+  white-space: pre-wrap; word-break: break-all; cursor: text;
+}
+.output .ph {
+  color: var(--ink-mute); font-family: inherit; font-size: 14px;
+}
+
+/* mode hint */
+.stats {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 12px; margin-top: 14px; padding-top: 12px;
+  border-top: 1px dashed var(--line-soft);
+}
+@media (min-width: 780px) { .stats { display: none; } }
+.mode-hint {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: 'Geist Mono', monospace; font-size: 11px; color: var(--ink-mute);
+  min-width: 0; overflow: hidden;
+}
+.mode-hint .swatch {
+  display: inline-block; padding: 3px 7px;
+  background: var(--accent-soft); color: var(--ink);
+  border-radius: 4px; font-weight: 500; white-space: nowrap; flex-shrink: 0;
+}
+.mode-hint > span:last-child {
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0;
+}
+
+/* count grid */
+.count-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 14px; min-height: 130px; align-content: start;
+  flex: 1 1 auto;
+}
+@media (min-width: 780px) { .count-grid { min-height: 320px; } }
+.count-item {
+  background: var(--bg-soft); border: 1px solid var(--line-soft);
+  border-radius: 12px; padding: 14px 16px;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.count-num {
+  font-family: 'Geist Mono', ui-monospace, monospace;
+  font-size: 24px; font-weight: 500; color: var(--ink);
+  letter-spacing: -0.02em; line-height: 1.1;
+}
+.count-k {
+  font-size: 11px; color: var(--ink-mute);
+  letter-spacing: 0.04em; font-family: 'Geist Mono', monospace;
+  text-transform: uppercase;
+}
+
+/* toast */
+.toast {
+  position: fixed; bottom: 24px; left: 50%;
+  transform: translateX(-50%) translateY(16px);
+  background: var(--ink); color: var(--bg-card);
+  padding: 10px 18px; border-radius: 999px;
+  font-size: 12px; font-family: 'Geist Mono', monospace;
+  letter-spacing: 0.05em; opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s ease, transform .35s cubic-bezier(.6,.05,.2,1);
+  box-shadow: 0 10px 30px rgba(0,0,0,.18);
+  z-index: 50; display: inline-flex; align-items: center; gap: 8px;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast .dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
+</style>
+</head>
+<body>
+<div class="util-root">
+  <div class="wrap">
+
+    <header class="brand">
+      <div class="brand-mark">
+        <span class="mark-dot"></span>
+        <div class="brand-text">
+          <div class="brand-name">textkit</div>
+          <div class="brand-sub">텍스트 유틸 · 쉼표, 하이픈, 글자수</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- toggle -->
+    <div class="toggle-wrap">
+      <div class="toggle" id="toggle" role="tablist">
+        <span class="indicator" id="indicator"></span>
+        <button class="active" data-mode="comma" role="tab">
+          <span class="glyph">,</span>찍어줘
+        </button>
+        <button data-mode="dash" role="tab">
+          <span class="glyph">−</span>없애줘
+        </button>
+        <button data-mode="count" role="tab">
+          <span class="glyph">글자</span>세줘
+        </button>
+      </div>
+    </div>
+
+    <!-- cards -->
+    <div class="cards">
+
+      <!-- input card -->
+      <section class="card">
+        <div class="card-head">
+          <div class="card-label">Input · 입력</div>
+          <div class="card-actions">
+            <button class="icon-btn" id="clearBtn" title="지우기">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 6 6 18M6 6l12 12"/>
+              </svg>
+              <span>지우기</span>
+            </button>
+          </div>
+        </div>
+        <textarea id="input" spellcheck="false" placeholder="예) 사과&#10;바나나&#10;포도&#10;→ 사과, 바나나, 포도"></textarea>
+        <div class="stats">
+          <span class="mode-hint">
+            <span class="swatch" id="swatchLabel">, 찍어줘</span>
+            <span id="modeDesc">줄·공백 사이에 쉼표를 넣어드려요</span>
+          </span>
+        </div>
+      </section>
+
+      <!-- output card (comma / dash) -->
+      <section class="card" id="outputCard">
+        <div class="card-head">
+          <div class="card-label" id="outputLabel">Output · 결과</div>
+          <div class="card-actions">
+            <button class="copy-btn" id="copyBtn" disabled>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="9" y="9" width="12" height="12" rx="2"/>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+              </svg>
+              <span>복사</span>
+            </button>
+          </div>
+        </div>
+        <div class="output" id="output">
+          <span class="ph">결과가 여기에 나타납니다</span>
+        </div>
+      </section>
+
+      <!-- count card (hidden by default) -->
+      <section class="card" id="countCard" style="display:none">
+        <div class="card-head">
+          <div class="card-label">Count · 카운트</div>
+        </div>
+        <div class="count-grid" id="countGrid">
+          <div class="count-item"><div class="count-num" id="cnt-all">0</div><div class="count-k">글자</div></div>
+          <div class="count-item"><div class="count-num" id="cnt-ns">0</div><div class="count-k">공백 제외</div></div>
+          <div class="count-item"><div class="count-num" id="cnt-words">0</div><div class="count-k">단어</div></div>
+          <div class="count-item"><div class="count-num" id="cnt-lines">0</div><div class="count-k">줄</div></div>
+          <div class="count-item"><div class="count-num" id="cnt-bytes">0</div><div class="count-k">바이트</div></div>
+        </div>
+      </section>
+
+    </div><!-- /cards -->
+  </div><!-- /wrap -->
+
+  <div class="toast" id="toast">
+    <span class="dot" id="toastDot"></span>
+    <span id="toastMsg"></span>
+  </div>
+</div>
+
+<script>
+(function () {
+  /* ── state ── */
+  let mode = 'comma';
+
+  const meta = {
+    comma: {
+      swatch: ', 찍어줘',
+      desc: '줄·공백 사이에 쉼표를 넣어드려요',
+      placeholder: '예) 사과\n바나나\n포도\n→ 사과, 바나나, 포도',
+      outLabel: 'Output · 결과',
+    },
+    dash: {
+      swatch: '− 없애줘',
+      desc: '문자열에서 하이픈을 모두 제거해요',
+      placeholder: '예) 010-1234-5678\n→ 01012345678',
+      outLabel: 'Output · 결과',
+    },
+    count: {
+      swatch: '글자 세줘',
+      desc: '글자/공백/줄/단어/바이트를 세요',
+      placeholder: '글자 수를 세고 싶은 텍스트를 붙여넣으세요',
+      outLabel: 'Count · 카운트',
+    },
+  };
+
+  /* ── transform ── */
+  function transform(text, m) {
+    if (!text) return '';
+    if (m === 'comma') {
+      return text.split(/[\n\r,\t]+|\s{2,}|\s+/).map(s => s.trim()).filter(Boolean).join(', ');
+    }
+    if (m === 'dash') {
+      return text.replace(/[-\u2010\u2011\u2012\u2013\u2014\u2015\uFE58\uFE63\uFF0D]/g, '');
+    }
+    return '';
+  }
+
+  function countStats(text) {
+    const all = text.length;
+    const noSpace = text.replace(/\s/g, '').length;
+    const lines = text === '' ? 0 : text.split(/\r?\n/).length;
+    const words = (text.trim().match(/\S+/g) || []).length;
+    const bytes = new TextEncoder().encode(text).length;
+    return { all, noSpace, lines, words, bytes };
+  }
+
+  /* ── DOM refs ── */
+  const toggleEl    = document.getElementById('toggle');
+  const indicator   = document.getElementById('indicator');
+  const inputEl     = document.getElementById('input');
+  const clearBtn    = document.getElementById('clearBtn');
+  const copyBtn     = document.getElementById('copyBtn');
+  const outputEl    = document.getElementById('output');
+  const outputCard  = document.getElementById('outputCard');
+  const countCard   = document.getElementById('countCard');
+  const swatchLabel = document.getElementById('swatchLabel');
+  const modeDesc    = document.getElementById('modeDesc');
+  const toastEl     = document.getElementById('toast');
+  const toastDot    = document.getElementById('toastDot');
+  const toastMsg    = document.getElementById('toastMsg');
+
+  /* ── indicator position ── */
+  function moveIndicator() {
+    const active = toggleEl.querySelector('button.active');
+    if (!active) return;
+    indicator.style.width  = active.offsetWidth + 'px';
+    indicator.style.transform = `translateX(${active.offsetLeft - 5}px)`;
+  }
+
+  const ro = new ResizeObserver(moveIndicator);
+  ro.observe(toggleEl);
+  Array.from(toggleEl.querySelectorAll('button')).forEach(b => ro.observe(b));
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(moveIndicator);
+  [100, 300, 600].forEach(d => setTimeout(moveIndicator, d));
+  window.addEventListener('resize', moveIndicator);
+
+  /* ── mode switch ── */
+  function setMode(m) {
+    mode = m;
+    toggleEl.querySelectorAll('button').forEach(b => {
+      b.classList.toggle('active', b.dataset.mode === m);
+    });
+    moveIndicator();
+
+    const info = meta[m];
+    inputEl.placeholder = info.placeholder;
+    swatchLabel.textContent = info.swatch;
+    modeDesc.textContent = info.desc;
+
+    if (m === 'count') {
+      outputCard.style.display = 'none';
+      countCard.style.display = '';
+      updateCount();
+    } else {
+      outputCard.style.display = '';
+      countCard.style.display = 'none';
+      updateOutput();
+    }
+  }
+
+  /* ── update output ── */
+  function updateOutput() {
+    const val = inputEl.value;
+    const result = transform(val, mode);
+    if (result) {
+      outputEl.textContent = result;
+      copyBtn.disabled = false;
+    } else {
+      outputEl.innerHTML = '<span class="ph">결과가 여기에 나타납니다</span>';
+      copyBtn.disabled = true;
+    }
+  }
+
+  function updateCount() {
+    const c = countStats(inputEl.value);
+    document.getElementById('cnt-all').textContent   = c.all.toLocaleString();
+    document.getElementById('cnt-ns').textContent    = c.noSpace.toLocaleString();
+    document.getElementById('cnt-words').textContent = c.words.toLocaleString();
+    document.getElementById('cnt-lines').textContent = c.lines.toLocaleString();
+    document.getElementById('cnt-bytes').textContent = c.bytes.toLocaleString();
+  }
+
+  /* ── toast ── */
+  let toastTimer = null;
+  function showToast(msg, ok) {
+    toastMsg.textContent = msg;
+    toastDot.style.background = ok ? 'var(--ok)' : 'var(--bad)';
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toastEl.classList.remove('show'), 1600);
+  }
+
+  /* ── copy ── */
+  async function doCopy() {
+    const result = transform(inputEl.value, mode);
+    if (!result) return;
+    try {
+      await navigator.clipboard.writeText(result);
+      showToast('복사 완료', true);
+    } catch {
+      const ta = document.createElement('textarea');
+      ta.value = result;
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); showToast('복사 완료', true); }
+      catch { showToast('복사 실패', false); }
+      ta.remove();
+    }
+  }
+
+  /* ── event listeners ── */
+  toggleEl.addEventListener('click', e => {
+    const btn = e.target.closest('button[data-mode]');
+    if (btn) setMode(btn.dataset.mode);
+  });
+
+  inputEl.addEventListener('input', () => {
+    if (mode === 'count') updateCount();
+    else updateOutput();
+  });
+
+  clearBtn.addEventListener('click', () => {
+    inputEl.value = '';
+    if (mode === 'count') updateCount();
+    else updateOutput();
+    inputEl.focus();
+  });
+
+  copyBtn.addEventListener('click', doCopy);
+
+  /* ── init ── */
+  setMode('comma');
+})();
+</script>
+</body>
+</html>
