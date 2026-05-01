@@ -134,11 +134,6 @@ body {
   white-space: nowrap;
 }
 .toggle button.active { color: var(--ind-ink); }
-.toggle button .glyph {
-  font-family: 'Geist Mono', monospace;
-  margin-right: 7px;
-  opacity: .9;
-}
 
 /* ── cards ── */
 .cards { display: flex; flex-direction: column; gap: 16px; }
@@ -326,13 +321,13 @@ textarea::placeholder {
       <div class="toggle" id="toggle" role="tablist">
         <span class="indicator" id="indicator"></span>
         <button class="active" data-mode="comma" role="tab">
-          <span class="glyph">,</span>찍어줘
+          , 찍어줘
         </button>
         <button data-mode="dash" role="tab">
-          <span class="glyph">−</span>없애줘
+          − 없애줘
         </button>
         <button data-mode="count" role="tab">
-          <span class="glyph">글자</span>세줘
+          글자 세줘
         </button>
       </div>
     </div>
