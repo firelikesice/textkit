@@ -256,27 +256,6 @@ textarea::placeholder {
   color: var(--ink-mute); font-family: inherit; font-size: 14px;
 }
 
-/* mode hint */
-.stats {
-  display: flex; justify-content: space-between; align-items: center;
-  gap: 12px; margin-top: 14px; padding-top: 12px;
-  border-top: 1px dashed var(--line-soft);
-}
-@media (min-width: 780px) { .stats { display: none; } }
-.mode-hint {
-  display: inline-flex; align-items: center; gap: 8px;
-  font-family: 'Geist Mono', monospace; font-size: 11px; color: var(--ink-mute);
-  min-width: 0; overflow: hidden;
-}
-.mode-hint .swatch {
-  display: inline-block; padding: 3px 7px;
-  background: var(--accent-soft); color: var(--ink);
-  border-radius: 4px; font-weight: 500; white-space: nowrap; flex-shrink: 0;
-}
-.mode-hint > span:last-child {
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0;
-}
-
 /* count grid */
 .count-grid {
   display: grid;
@@ -367,12 +346,6 @@ textarea::placeholder {
           </div>
         </div>
         <textarea id="input" spellcheck="false" placeholder="예) 토마토&#10;식빵&#10;커피&#10;→ 토마토, 식빵, 커피"></textarea>
-        <div class="stats">
-          <span class="mode-hint">
-            <span class="swatch" id="swatchLabel">, 찍어줘</span>
-            <span id="modeDesc">줄·공백 사이에 쉼표를 넣어드려요</span>
-          </span>
-        </div>
       </section>
 
       <!-- output card (comma / dash) -->
@@ -423,26 +396,18 @@ textarea::placeholder {
 
   const meta = {
     comma: {
-      swatch: ', 찍어줘',
-      desc: '줄·공백 사이에 쉼표를 넣어드려요.',
       placeholder: '예) 토마토\n커피\n식빵\n→ 토마토, 커피, 식빵',
       outLabel: 'Output · 결과',
     },
     dash: {
-      swatch: '− 없애줘',
-      desc: '문자열에서 하이픈을 모두 제거해요.',
       placeholder: '예) 010-1234-5678\n→ 01012345678',
       outLabel: 'Output · 결과',
     },
     dashAdd: {
-      swatch: '− 넣어줘',
-      desc: '숫자만 있는 휴대폰 번호에 하이픈을 넣어요.',
       placeholder: '예) 01012345678\n→ 010-1234-5678',
       outLabel: 'Output · 결과',
     },
     count: {
-      swatch: '글자 세줘',
-      desc: '글자/공백/줄/단어/바이트를 세요',
       placeholder: '글자 수를 세고 싶은 텍스트를 붙여넣으세요.',
       outLabel: 'Count · 카운트',
     },
@@ -493,8 +458,6 @@ textarea::placeholder {
   const outputEl    = document.getElementById('output');
   const outputCard  = document.getElementById('outputCard');
   const countCard   = document.getElementById('countCard');
-  const swatchLabel = document.getElementById('swatchLabel');
-  const modeDesc    = document.getElementById('modeDesc');
   const toastEl     = document.getElementById('toast');
   const toastDot    = document.getElementById('toastDot');
   const toastMsg    = document.getElementById('toastMsg');
@@ -524,8 +487,6 @@ textarea::placeholder {
 
     const info = meta[m];
     inputEl.placeholder = info.placeholder;
-    swatchLabel.textContent = info.swatch;
-    modeDesc.textContent = info.desc;
 
     if (m === 'count') {
       outputCard.style.display = 'none';
