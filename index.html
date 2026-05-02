@@ -326,6 +326,9 @@ textarea::placeholder {
         <button data-mode="dash" role="tab">
           − 없애줘
         </button>
+        <button data-mode="dashAdd" role="tab">
+          − 넣어줘
+        </button>
         <button data-mode="count" role="tab">
           글자 세줘
         </button>
@@ -416,6 +419,12 @@ textarea::placeholder {
       placeholder: '예) 010-1234-5678\n→ 01012345678',
       outLabel: 'Output · 결과',
     },
+    dashAdd: {
+      swatch: '− 넣어줘',
+      desc: '숫자만 있는 휴대폰 번호에 하이픈을 넣어요.',
+      placeholder: '예) 01012345678\n→ 010-1234-5678',
+      outLabel: 'Output · 결과',
+    },
     count: {
       swatch: '글자 세줘',
       desc: '글자/공백/줄/단어/바이트를 세요',
@@ -432,6 +441,21 @@ textarea::placeholder {
     }
     if (m === 'dash') {
       return text.replace(/[-\u2010\u2011\u2012\u2013\u2014\u2015\uFE58\uFE63\uFF0D]/g, '');
+    }
+    if (m === 'dashAdd') {
+      return text
+        .split(/\r?\n/)
+        .map(line => {
+          const digits = line.replace(/\D/g, '');
+          if (digits.length === 11) {
+            return `${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7)}`;
+          }
+          if (digits.length === 10) {
+            return `${digits.slice(0, 3)}-${digits.slice(3, 6)}-${digits.slice(6)}`;
+          }
+          return line;
+        })
+        .join('\n');
     }
     return '';
   }
